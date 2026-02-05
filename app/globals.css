@@ -1,0 +1,421 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Pacifico&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #1a1a1a;
+  background: #1f1d22;
+}
+
+button {
+  font-family: inherit;
+}
+
+main {
+  min-height: 100vh;
+}
+
+.stage {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background: radial-gradient(circle at 20% 20%, #2f2a33, #1f1d22 55%, #141216);
+}
+
+.slideStage {
+  position: relative;
+  width: min(1100px, 92vw);
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slideFrame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #fff7f5;
+  border-radius: 28px;
+  padding: 40px 48px;
+  box-shadow: 0 30px 70px rgba(16, 11, 18, 0.4);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.slideFrame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 94, 168, 0.12) 0.5px, transparent 0.5px);
+  background-size: 12px 12px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.slideLabel {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #9c7f8a;
+  font-weight: 600;
+}
+
+.title {
+  font-family: "Pacifico", cursive;
+  font-size: clamp(36px, 4vw, 52px);
+  margin: 16px 0 12px;
+  color: var(--themeColor, #ff5ea8);
+  line-height: 1.1;
+}
+
+.subtitle {
+  margin: 6px 0 16px;
+  font-size: 18px;
+  color: #6b5d66;
+}
+
+.mutedSubtitle {
+  font-size: 16px;
+  color: #7d6b75;
+  margin-top: -4px;
+}
+
+.questionSlide {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.slideAccent {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background-size: 120px 120px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.questionHeader {
+  max-width: 78%;
+}
+
+.questionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.questionSlide.center {
+  align-items: center;
+  text-align: center;
+}
+
+.questionSlide.center .questionHeader {
+  max-width: 90%;
+}
+
+.questionSlide.center .questionBody {
+  align-items: center;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6b5d66;
+  margin-bottom: 12px;
+}
+
+.progressBar {
+  height: 8px;
+  background: #ffe1ee;
+  border-radius: 999px;
+  overflow: hidden;
+  flex: 1;
+  margin-left: 12px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff76b7, #ff5ea8);
+  border-radius: inherit;
+  transition: width 240ms ease;
+}
+
+.buttonArea {
+  position: relative;
+  margin-top: 12px;
+}
+
+.buttonRow {
+  display: inline-flex;
+  gap: 16px;
+}
+
+.answerGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.primaryButton,
+.ghostButton {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease,
+    background-color 160ms ease, color 160ms ease;
+}
+
+.primaryButton {
+  background: var(--themeColor, #ff5ea8);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(255, 94, 168, 0.35);
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(255, 94, 168, 0.4);
+}
+
+.ghostButton {
+  background: #fff2f7;
+  color: #ff4c9c;
+  border: 1px solid rgba(255, 94, 168, 0.25);
+}
+
+.ghostButton:hover,
+.ghostButton:focus-visible {
+  transform: translateY(-1px);
+}
+
+.answerButton {
+  width: 100%;
+  text-align: center;
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: #fffafc;
+  border: 1px solid rgba(255, 94, 168, 0.2);
+  box-shadow: 0 10px 20px rgba(255, 94, 168, 0.12);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.answerButton:hover,
+.answerButton:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(255, 94, 168, 0.18);
+}
+
+.feedback {
+  margin: 14px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b2d4a;
+}
+
+.frame {
+  margin: 20px auto 8px;
+}
+
+.finalChoice {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.finalCard {
+  position: relative;
+  border-radius: 18px;
+  padding: 18px;
+  background: #fffafc;
+  border: 1px solid rgba(255, 94, 168, 0.18);
+  box-shadow: 0 10px 26px rgba(255, 94, 168, 0.12);
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholderSlot {
+  width: 100%;
+  height: 52px;
+  border-radius: 999px;
+  border: 2px dashed rgba(255, 94, 168, 0.4);
+  background: rgba(255, 94, 168, 0.06);
+}
+
+.overlayLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.evasiveButton {
+  position: absolute;
+  z-index: 10000;
+  pointer-events: auto;
+  transition: transform 220ms ease;
+  will-change: transform;
+}
+
+.finalChoice .primaryButton {
+  width: 100%;
+}
+
+.sticker {
+  position: absolute;
+  width: 88px;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.sticker.small {
+  width: 64px;
+  opacity: 0.8;
+}
+
+.replayButton {
+  margin-top: 18px;
+}
+
+.heartPhoto {
+  margin: 12px auto 14px;
+  position: relative;
+  aspect-ratio: 1 / 1;
+  filter: drop-shadow(0 16px 28px rgba(255, 94, 168, 0.25));
+}
+
+.heartPhoto svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+
+.heartPhoto:hover {
+  filter: drop-shadow(0 16px 28px rgba(255, 94, 168, 0.35));
+}
+
+.heartFallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  display: none;
+  pointer-events: none;
+}
+
+.heartsLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.heart {
+  position: absolute;
+  bottom: -24px;
+  animation-name: floatUp;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  opacity: 0.9;
+  filter: drop-shadow(0 6px 10px rgba(255, 94, 168, 0.2));
+}
+
+.heart::before {
+  content: "💖";
+  font-size: inherit;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.9);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.soundToggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 94, 168, 0.2);
+  background: #fff6fb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.confettiCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+@media (max-width: 480px) {
+  .answerGrid {
+    grid-template-columns: 1fr;
+  }
+  .finalChoice {
+    grid-template-columns: 1fr;
+  }
+  .slideStage {
+    aspect-ratio: auto;
+    height: auto;
+  }
+  .slideFrame {
+    padding: 28px 22px;
+    height: auto;
+  }
+  .title {
+    font-size: clamp(30px, 7vw, 38px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton,
+  .ghostButton,
+  .evasiveButton {
+    transition: none;
+  }
+}
