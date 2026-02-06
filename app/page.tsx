@@ -22,6 +22,7 @@ type Question = {
   prompt: string;
   options: string[];
   correctIndex: number;
+  memoryImage: string;
   themeColor?: string;
   stickers?: StickerPlacement[];
 };
@@ -29,9 +30,15 @@ type Question = {
 const QUIZ_QUESTIONS: Question[] = [
   {
     id: "q1",
-    prompt: "What is Vedant's ideal Valentine snack?",
-    options: ["Gourmet tacos", "Chocolate strawberries", "Spicy ramen", "Macarons"],
+    prompt: "On our first date, what did we order?",
+    options: [
+      "California roll + yellowfin truffle hamachi",
+      "Sashimi salad + beef skewers",
+      "Kiwi",
+      "Vada pav + Pani puri"
+    ],
     correctIndex: 1,
+    memoryImage: "/izumi.jpg",
     themeColor: "#ff6b9c",
     stickers: [
       { name: "drink", style: { top: 24, right: 40, transform: "rotate(6deg)" } },
@@ -40,20 +47,22 @@ const QUIZ_QUESTIONS: Question[] = [
   },
   {
     id: "q2",
-    prompt: "Pick a perfect Valentine's vibe.",
-    options: ["Sunset picnic", "Arcade night", "Movie marathon", "Stargazing drive"],
-    correctIndex: 0,
+    prompt: "What is one song that always reminds me of us?",
+    options: ["Mr. Brightside", "London", "Suniya Suniya", "Orange Juice"],
+    correctIndex: 2,
+    memoryImage: "/suniyasuniya.png",
     themeColor: "#ff8fb1",
     stickers: [
-      { name: "gift", style: { top: 20, left: 24, transform: "rotate(-4deg)" } },
+      { name: "gift", style: { top: 6, right: 24, transform: "rotate(-4deg)" } },
       { name: "sparkles", className: "small", style: { bottom: 30, right: 36 } }
     ]
   },
   {
     id: "q3",
-    prompt: "What's the official Valentine playlist mood?",
-    options: ["Soft & sweet", "Hype & loud", "Indie & cozy", "Classic love songs"],
-    correctIndex: 2,
+    prompt: "What was the first item of clothing you took from me?",
+    options: ["Blue sweater", "Black Hoodie", "Heart white t-shirt", "Blue full-sleeves t-shirt"],
+    correctIndex: 3,
+    memoryImage: "/tshirt.jpg",
     themeColor: "#ff5ea8",
     stickers: [
       { name: "bow", style: { top: 18, right: 36, transform: "rotate(8deg)" } },
@@ -381,23 +390,36 @@ function useEvasivePosition({
 
 function QuizIntro({ onStart }: { onStart: () => void }) {
   return (
-    <QuestionSlide
-      label="Vedant's Valentine Quiz"
-      title="Answer 3 questions to be Vedant’s Valentine 💘"
-      subtitle="No pressure. Okay maybe a little."
-      themeColor="#ff5ea8"
-      stickers={[
-        { name: "heart", style: { top: 20, left: 28, transform: "rotate(-6deg)" } },
-        { name: "sparkles", className: "small", style: { bottom: 28, right: 36 } }
-      ]}
-      align="center"
-    >
-      <div className="buttonArea">
-        <button className="primaryButton" onClick={onStart} type="button">
-          Start Quiz
+    <section className="introPage" style={{ ["--themeColor" as string]: "#ff5ea8" }}>
+      {/* Decorative stickers */}
+      <img src="/stickers/heart.svg" alt="" className="sticker introSticker1" />
+      <img src="/stickers/sparkles.svg" alt="" className="sticker introSticker2" />
+
+      {/* Polaroid photos */}
+      <div className="polaroid polaroid1">
+        <img src="/valentine.jpeg" alt="" />
+      </div>
+      <div className="polaroid polaroid2">
+        <img src="/cute.JPG" alt="" />
+      </div>
+      <div className="polaroid polaroid3">
+        <img src="/firstdate.JPG" alt="" />
+      </div>
+
+      {/* Content */}
+      <div className="introContent">
+        <span className="slideLabel">Vedant’s Valentine Quiz</span>
+        <h1 className="title">{"Answer 3 questions to be Vedant’s Valentine 💘"}</h1>
+        <p className="subtitle">A tiny quiz, made with a lot of love.</p>
+      </div>
+
+      {/* Button */}
+      <div className="introButtonArea">
+        <button className="primaryButton introStartBtn" onClick={onStart} type="button">
+          Start Quiz 💝
         </button>
       </div>
-    </QuestionSlide>
+    </section>
   );
 }
 
@@ -414,23 +436,68 @@ function QuizQuestion({
 }) {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [locked, setLocked] = useState(false);
+  const [showMemory, setShowMemory] = useState(false);
+  const [memoryExiting, setMemoryExiting] = useState(false);
+  const [shakeIndex, setShakeIndex] = useState<number | null>(null);
 
   const handleAnswer = (choiceIndex: number) => {
     if (locked) return;
     if (choiceIndex === question.correctIndex) {
-      setFeedback("Correct ✅");
       setLocked(true);
-      window.setTimeout(() => {
-        setFeedback(null);
-        setLocked(false);
-        onCorrect();
-      }, 750);
+      setFeedback(null);
+      setShakeIndex(null);
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate([40, 30, 40]);
+      }
+      setShowMemory(true);
+      setMemoryExiting(false);
     } else {
+      setShakeIndex(choiceIndex);
       setFeedback("Nope 😅 try again");
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate(30);
+      }
+      window.setTimeout(() => {
+        setShakeIndex(null);
+        setFeedback(null);
+      }, 600);
     }
   };
 
+  const handleMemoryDismiss = () => {
+    if (memoryExiting) return;
+    setMemoryExiting(true);
+    window.setTimeout(() => {
+      setShowMemory(false);
+      setMemoryExiting(false);
+      setLocked(false);
+      onCorrect();
+    }, 400);
+  };
+
   const progress = ((index + 1) / total) * 100;
+
+  if (showMemory && question.memoryImage) {
+    return (
+      <div
+        className={`memoryReveal${memoryExiting ? " memoryExit" : ""}`}
+        onClick={handleMemoryDismiss}
+      >
+        <div className="memoryPhotoWrap">
+          <img src={question.memoryImage} alt="" className="memoryPhoto" />
+        </div>
+        <span className="memoryHint">tap anywhere to continue ♡</span>
+      </div>
+    );
+  }
+
+  if (showMemory && !question.memoryImage) {
+    // No image for this question — just advance
+    setShowMemory(false);
+    setLocked(false);
+    onCorrect();
+    return null;
+  }
 
   return (
     <QuestionSlide
@@ -441,7 +508,7 @@ function QuizQuestion({
     >
       <div className="progressRow">
         <span>
-          Question {index + 1} of {total}
+          {index + 1} ♡ {total}
         </span>
         <div className="progressBar" aria-hidden="true">
           <div className="progressFill" style={{ width: `${progress}%` }} />
@@ -451,7 +518,7 @@ function QuizQuestion({
         {question.options.map((option, optionIndex) => (
           <button
             key={option}
-            className="ghostButton answerButton"
+            className={`ghostButton answerButton${shakeIndex === optionIndex ? " shake" : ""}`}
             onClick={() => handleAnswer(optionIndex)}
             type="button"
           >
@@ -524,9 +591,8 @@ function FinalChoice({
   return (
     <QuestionSlide
       label="Vedant's Valentine Quiz"
-      title="How badly do you wanna be Vedant’s Valentine?"
-      subtitle="Choose wisely. The universe is watching. ✨"
-      mutedSubtitle="You’ll never be able to catch one of these options, lol."
+      title="Will you be my Valentine?"
+      mutedSubtitle="There is only one option…"
       themeColor="#ff5ea8"
       stickers={[
         { name: "gift", style: { top: 24, right: 32, transform: "rotate(6deg)" } },
@@ -553,7 +619,7 @@ function FinalChoice({
             onClick={onCelebrate}
             type="button"
           >
-            I’m dying to be his Valentine
+            Yes
           </button>
         </div>
       </div>
@@ -572,10 +638,10 @@ function FinalChoice({
                 event.preventDefault();
                 moveButton();
               }}
-              aria-label="meh, I don't care"
+              aria-label="No"
               type="button"
             >
-              meh, I don’t care
+              No
             </button>
           </div>,
           overlayNode
@@ -592,19 +658,17 @@ function Celebration({
   return (
     <QuestionSlide
       label="Vedant's Valentine Quiz"
-      title="YAY! 💖 You did it."
-      subtitle="Welcome to Vedant’s Valentine era."
+      title="Happy Valentines Day 💖"
+      subtitle="I love you the most."
       themeColor="#ff6b9c"
+      className="celebrationSlide"
       stickers={[
         { name: "cake", style: { top: 20, left: 28, transform: "rotate(-4deg)" } },
         { name: "heart", className: "small", style: { bottom: 22, right: 34 } }
       ]}
       align="center"
     >
-      <HeartPhoto src="/valentine.jpeg" alt="A sweet valentine memory" />
-      <button className="ghostButton replayButton" onClick={onReplay} type="button">
-        Replay
-      </button>
+      <img src="/lastpic.jpg" alt="A sweet valentine memory" className="celebrationPhoto" />
     </QuestionSlide>
   );
 }
