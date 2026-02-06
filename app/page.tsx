@@ -677,7 +677,6 @@ export default function Home() {
   const [stage, setStage] = useState<Stage>("intro");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hearts, setHearts] = useState<Heart[]>([]);
-  const [soundEnabled, setSoundEnabled] = useState(false);
 
   const reducedMotion = usePrefersReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -685,6 +684,7 @@ export default function Home() {
   const confettiCleanupRef = useRef<(() => void) | null>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const musicRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (stage !== "celebrate") {
@@ -745,11 +745,18 @@ export default function Home() {
     return () => window.clearInterval(interval);
   }, [reducedMotion, stage]);
 
+  const startMusic = () => {
+    if (!musicRef.current) {
+      const audio = new Audio("/perfect.mp3");
+      audio.loop = true;
+      audio.volume = 0.1;
+      musicRef.current = audio;
+    }
+    musicRef.current.play().catch(() => {});
+  };
+
   const handleCelebrate = () => {
     setStage("celebrate");
-    if (soundEnabled) {
-      playPop(audioContextRef);
-    }
   };
 
   const handleReplay = () => {
@@ -761,17 +768,7 @@ export default function Home() {
     <main className="stage">
       <SlideStage ref={stageRef}>
         <SlideFrame>
-          <button
-            className="soundToggle"
-            onClick={() => setSoundEnabled((prev) => !prev)}
-            aria-pressed={soundEnabled}
-            aria-label={soundEnabled ? "Mute sound effects" : "Unmute sound effects"}
-            type="button"
-          >
-            {soundEnabled ? "🔊" : "🔇"}
-          </button>
-
-          {stage === "intro" && <QuizIntro onStart={() => setStage("quiz")} />}
+          {stage === "intro" && <QuizIntro onStart={() => { startMusic(); setStage("quiz"); }} />}
           {stage === "quiz" && (
             <QuizQuestion
               question={QUIZ_QUESTIONS[currentIndex]}
