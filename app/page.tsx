@@ -50,7 +50,7 @@ const QUIZ_QUESTIONS: Question[] = [
     prompt: "What is one song that always reminds me of us?",
     options: ["Mr. Brightside", "London", "Suniya Suniya", "Orange Juice"],
     correctIndex: 2,
-    memoryImage: "/suniyasuniya.png",
+    memoryImage: "/suniyasuniya.PNG",
     themeColor: "#ff8fb1",
     stickers: [
       { name: "gift", style: { top: 6, right: 24, transform: "rotate(-4deg)" } },
@@ -403,7 +403,7 @@ function QuizIntro({ onStart }: { onStart: () => void }) {
         <img src="/cute.JPG" alt="" />
       </div>
       <div className="polaroid polaroid3">
-        <img src="/firstdate.JPG" alt="" />
+        <img src="/firstdate.jpg" alt="" />
       </div>
 
       {/* Content */}
